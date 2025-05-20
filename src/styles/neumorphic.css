@@ -1,0 +1,35 @@
+:root {
+  --bg: #e0e0e0;
+  --shadow-dark: #bebebe;
+  --shadow-light: #ffffff;
+}
+:root[data-theme="dark"] {
+  --bg: #1a1a1a;
+  --shadow-dark: #000000;
+  --shadow-light: #333333;
+}
+.neu-input {
+  background: var(--bg);
+  box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+  transition: all 0.2s ease-in-out;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+}
+.neu-input:focus {
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+  outline: none;
+}
+.neu-button {
+  background: var(--bg);
+  box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+  transition: all 0.2s ease-in-out;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  background-color: #3b82f6;
+}
+.neu-button:active {
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+}

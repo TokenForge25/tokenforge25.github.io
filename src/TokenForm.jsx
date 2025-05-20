@@ -1,49 +1,36 @@
-import React, { useState } from 'react';
-import DOMPurify from 'dompurify';
+import { useState } from 'react';
+import NeuInput from './components/NeuInput';
+import './styles/neumorphic.css';
 
-function TokenForm() {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
+export default function TokenForm() {
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const sanitizedInput = DOMPurify.sanitize(input);
-    setOutput(`Generated Token: ${sanitizedInput}`);
+    if (!name.trim()) return setError('Token name required');
+    if (name.length < 3) return setError('Minimum 3 characters');
+    setError('');
+    try {
+      const response = await fetch('https://api.tokenforge.workers.dev/api/create-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, symbol: name.slice(0, 4).toUpperCase() })
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (err) {
+      setError('Failed to create token');
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">TokenForge</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="input">
-              Input
-            </label>
-            <input
-              type="text"
-              id="input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg"
-              placeholder="Enter your input"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-          >
-            Generate Token
-          </button>
-        </form>
-        {output && (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-gray-800">{output}</p>
-          </div>
-        )}
-      </div>
-    </div>
+    <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 p-4">
+      <NeuInput label="Token Name" onChange={setName} />
+      {error && <p className="text-red-500">{error}</p>}
+      {result && <p className="text-green-500">Token created: {result.txHash}</p>}
+      <button className="neu-button">Generate Token</button>
+    </form>
   );
 }
-
-export default TokenForm;
