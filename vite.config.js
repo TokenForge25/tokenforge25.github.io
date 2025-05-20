@@ -1,33 +1,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import critters from 'critters';
-import compression from 'vite-plugin-compression';
+import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
     critters(),
-    compression({ algorithm: 'brotliCompress', threshold: 10240 }),
+    viteCompression({ algorithm: 'brotliCompress', threshold: 10240 }),
   ],
   build: {
+    outDir: 'build',
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          helmet: ['react-helmet'],
-        },
-      },
-    },
+    minify: 'terser',
+    cssMinify: true,
   },
-  css: {
-    postcss: {
-      plugins: [
-        require('tailwindcss'),
-        require('autoprefixer'),
-      ],
-    },
+  server: {
+    port: 3000,
+    open: true,
   },
 });
