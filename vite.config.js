@@ -1,21 +1,25 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import viteCompression from 'vite-plugin-compression';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import viteCompression from 'vite-plugin-compression'
 
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
-    viteCompression({ algorithm: 'brotliCompress', threshold: 10240 }),
+    viteCompression({ algorithm: 'brotliCompress', threshold: 10240 })
   ],
   build: {
     outDir: 'build',
     sourcemap: false,
     minify: 'terser',
     cssMinify: true,
-  },
-  server: {
-    port: 3000,
-    open: true,
-  },
-});
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          solana: ['@solana/web3.js', '@solana/spl-token'],
+          react: ['react', 'react-dom']
+        }
+      }
+    }
+  }
+})
